@@ -1,22 +1,38 @@
 const readline = require("readline");
 
 const interfaz = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
+	input: process.stdin,
+	output: process.stdout,
 });
 
-interfaz.question("Ingrese el nombre completo del estudiante: ", (nombreOriginal) => {
-  interfaz.question("Ingrese el año de nacimiento: ", (anioNacimiento) => {
-    const nombreLimpio = nombreOriginal.trim();
-    const nombreMayusculas = nombreLimpio.toUpperCase();
-    const primerNombre = nombreMayusculas.split(" ")[0];
-    const ultimosDosDigitos = anioNacimiento.slice(-2);
-    const codigoUsuario = `${primerNombre.slice(0, 3)}${ultimosDosDigitos}-ESTUDIANTE`;
+const preguntar = (mensaje) =>
+	new Promise((resolver) => interfaz.question(mensaje, resolver));
 
-    console.log(`\nNombre formateado: ${nombreMayusculas}`);
-    console.log(`Cantidad de caracteres del nombre original: ${nombreOriginal.length}`);
-    console.log(`Código de Usuario: ${codigoUsuario}`);
+async function procesarExamen() {
+	const nombre = await preguntar("Ingrese el nombre del estudiante: ");
+	const notaIngresada = await preguntar("Ingrese la nota obtenida (0.0 a 10.0): ");
+	const nota = parseFloat(notaIngresada);
 
-    interfaz.close();
-  });
-});
+	if (isNaN(nota) || nota < 0 || nota > 10) {
+		console.log("Error: la nota debe ser un valor numérico entre 0.0 y 10.0.");
+	} else {
+		let desempeño;
+
+		if (nota >= 9) {
+			desempeño = "Desempeño Excelente (Aprobado)";
+		} else if (nota >= 6) {
+			desempeño = "Desempeño Satisfactorio (Aprobado)";
+		} else {
+			desempeño = "Reprobado — Requiere refuerzo";
+		}
+
+		console.log("Reporte del estudiante");
+		console.log(`Nombre: ${nombre}`);
+		console.log(`Nota: ${nota.toFixed(1)}`);
+		console.log(`Desempeño: ${desempeño}`);
+	}
+
+	interfaz.close();
+}
+
+procesarExamen();

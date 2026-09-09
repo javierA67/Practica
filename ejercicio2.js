@@ -5,28 +5,26 @@ const interfaz = readline.createInterface({
 	output: process.stdout,
 });
 
-interfaz.question("Ingrese el peso del paquete en kilogramos: ", (pesoIngresado) => {
-	interfaz.question("Ingrese la tarifa por kilogramo en dólares: ", (tarifaIngresada) => {
-		const peso = Number(pesoIngresado);
-		const tarifa = Number(tarifaIngresada);
-		const costoBase = peso * tarifa;
-		const costoRedondeado = Math.round(costoBase);
-		const costoMinimo = Math.floor(costoBase);
-		const costoMaximo = Math.ceil(costoBase);
+interfaz.question("Ingrese la cantidad de horas estacionadas: ", (horasIngresadas) => {
+	const horas = Number(horasIngresadas);
 
-		const formatoMoneda = new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "USD",
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
+	if (isNaN(horas) || !Number.isInteger(horas) || horas <= 0) {
+		console.log("Error: ingrese una cantidad de horas entera mayor que cero.");
+	} else {
+		let total;
 
-		console.log("\nResumen de la cotización");
-		console.log(`Costo Base: ${formatoMoneda.format(costoBase)}`);
-		console.log(`Costo Redondeado Tradicional: ${formatoMoneda.format(costoRedondeado)}`);
-		console.log(`Costo Mínimo (Hacia abajo): ${formatoMoneda.format(costoMinimo)}`);
-		console.log(`Costo Máximo (Hacia arriba): ${formatoMoneda.format(costoMaximo)}`);
+		if (horas === 1) {
+			total = 2;
+		} else if (horas <= 4) {
+			total = horas * 1.5;
+		} else {
+			total = horas * 1;
+		}
 
-		interfaz.close();
-	});
+		console.log("Ticket de estacionamiento");
+		console.log(`Horas cobradas: ${horas}`);
+		console.log(`Total a pagar: $${total.toFixed(2)}`);
+	}
+
+	interfaz.close();
 });
